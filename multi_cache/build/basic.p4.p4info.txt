@@ -1,0 +1,201 @@
+pkg_info {
+  arch: "v1model"
+}
+tables {
+  preamble {
+    id: 37375156
+    name: "MyIngress.ipv4_lpm"
+    alias: "ipv4_lpm"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.ipv4.dstAddr"
+    bitwidth: 32
+    match_type: LPM
+  }
+  action_refs {
+    id: 28792405
+  }
+  action_refs {
+    id: 25652968
+  }
+  action_refs {
+    id: 21257015
+  }
+  size: 1024
+}
+actions {
+  preamble {
+    id: 21257015
+    name: "NoAction"
+    alias: "NoAction"
+    annotations: "@noWarn(\"unused\")"
+  }
+}
+actions {
+  preamble {
+    id: 25652968
+    name: "MyIngress.drop"
+    alias: "drop"
+  }
+}
+actions {
+  preamble {
+    id: 19896847
+    name: "MyIngress.change_direction"
+    alias: "change_direction"
+  }
+}
+actions {
+  preamble {
+    id: 28792405
+    name: "MyIngress.ipv4_forward"
+    alias: "ipv4_forward"
+  }
+  params {
+    id: 1
+    name: "dstAddr"
+    bitwidth: 48
+  }
+  params {
+    id: 2
+    name: "port"
+    bitwidth: 9
+  }
+}
+actions {
+  preamble {
+    id: 18851321
+    name: "MyIngress.init"
+    alias: "init"
+  }
+}
+actions {
+  preamble {
+    id: 25892681
+    name: "MyIngress.compute_hashes"
+    alias: "compute_hashes"
+  }
+}
+registers {
+  preamble {
+    id: 374895919
+    name: "MyIngress.l1_cache_key"
+    alias: "l1_cache_key"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 4096
+}
+registers {
+  preamble {
+    id: 381478826
+    name: "MyIngress.l1_cache_value"
+    alias: "l1_cache_value"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 4096
+}
+registers {
+  preamble {
+    id: 379147662
+    name: "MyIngress.l2_cache_key"
+    alias: "l2_cache_key"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 4096
+}
+registers {
+  preamble {
+    id: 382468277
+    name: "MyIngress.l2_cache_value"
+    alias: "l2_cache_value"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 4096
+}
+registers {
+  preamble {
+    id: 385860940
+    name: "MyIngress.l3_cache_key"
+    alias: "l3_cache_key"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 4096
+}
+registers {
+  preamble {
+    id: 381342188
+    name: "MyIngress.l3_cache_value"
+    alias: "l3_cache_value"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 4096
+}
+registers {
+  preamble {
+    id: 371039895
+    name: "MyIngress.l4_cache_key"
+    alias: "l4_cache_key"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 4096
+}
+registers {
+  preamble {
+    id: 385170662
+    name: "MyIngress.l4_cache_value"
+    alias: "l4_cache_value"
+  }
+  type_spec {
+    bitstring {
+      bit {
+        bitwidth: 32
+      }
+    }
+  }
+  size: 4096
+}
+type_info {
+}
