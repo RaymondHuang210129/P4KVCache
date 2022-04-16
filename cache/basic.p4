@@ -2,7 +2,7 @@
 #include <core.p4>
 #include <v1model.p4>
 
-#define KV_ENTRIES 4096
+#define KV_ENTRIES 1
 
 const bit<16> TYPE_IPV4 = 0x800;
 const bit<8> READ_BIT = 0x52;  // R
@@ -119,8 +119,8 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
-    register<bit<32>>(4096) kv_cache_key;
-    register<bit<32>>(4096) kv_cache_value;
+    register<bit<32>>(KV_ENTRIES) kv_cache_key;
+    register<bit<32>>(KV_ENTRIES) kv_cache_value;
     bit<32> keyPos;
     bit<32> currentKey;
     bit<32> currentValue;
@@ -140,10 +140,14 @@ control MyIngress(inout headers hdr,
         hash(keyPos, HashAlgorithm.crc32, (bit<32>)0, {key}, (bit<32>)KV_ENTRIES);
     }
 
-    action swap_ipv4() {
+    action change_direction() {
         ip4Addr_t tmp = hdr.ipv4.srcAddr;
         hdr.ipv4.srcAddr = hdr.ipv4.dstAddr;
         hdr.ipv4.dstAddr = tmp;
+        bit<16> tmp2 = hdr.udp.srcPort;
+        hdr.udp.srcPort = hdr.udp.dstPort;
+        hdr.udp.dstPort = tmp2;
+        hdr.kv.direction = OUTBOUND;
     }
 
     table ipv4_lpm {
@@ -169,7 +173,7 @@ control MyIngress(inout headers hdr,
                 kv_cache_key.read(currentKey, keyPos);
                 if (currentKey == hdr.kv.key) {
                     kv_cache_value.read(hdr.kv.value, keyPos);
-                    swap_ipv4();
+                    change_direction();
                 }
             }
         }

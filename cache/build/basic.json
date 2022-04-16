@@ -7,7 +7,8 @@
         ["tmp", 32, false],
         ["keyPos_0", 32, false],
         ["currentKey_0", 32, false],
-        ["tmp_0", 32, false]
+        ["tmp_0", 32, false],
+        ["tmp2_0", 16, false]
       ]
     },
     {
@@ -233,7 +234,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "basic.p4",
-        "line" : 220,
+        "line" : 223,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
@@ -250,10 +251,10 @@
       "source_info" : {
         "filename" : "basic.p4",
         "line" : 122,
-        "column" : 28,
+        "column" : 25,
         "source_fragment" : "kv_cache_key"
       },
-      "size" : 4096,
+      "size" : 1,
       "bitwidth" : 32
     },
     {
@@ -262,10 +263,10 @@
       "source_info" : {
         "filename" : "basic.p4",
         "line" : 123,
-        "column" : 28,
+        "column" : 25,
         "source_fragment" : "kv_cache_value"
       },
-      "size" : 4096,
+      "size" : 1,
       "bitwidth" : 32
     }
   ],
@@ -286,7 +287,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "basic.p4",
-        "line" : 198,
+        "line" : 201,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },
@@ -525,20 +526,20 @@
             },
             {
               "type" : "hexstr",
-              "value" : "0x00001000"
+              "value" : "0x00000001"
             }
           ],
           "source_info" : {
             "filename" : "basic.p4",
             "line" : 140,
             "column" : 8,
-            "source_fragment" : "hash(keyPos, HashAlgorithm.crc32, (bit<32>)0, {key}, (bit<32>)4096)"
+            "source_fragment" : "hash(keyPos, HashAlgorithm.crc32, (bit<32>)0, {key}, (bit<32>)1)"
           }
         }
       ]
     },
     {
-      "name" : "MyIngress.swap_ipv4",
+      "name" : "MyIngress.change_direction",
       "id" : 4,
       "runtime_data" : [],
       "primitives" : [
@@ -598,11 +599,68 @@
             "column" : 8,
             "source_fragment" : "hdr.ipv4.dstAddr = tmp"
           }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp2_0"]
+            },
+            {
+              "type" : "field",
+              "value" : ["udp", "srcPort"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "basic.p4",
+            "line" : 147,
+            "column" : 8,
+            "source_fragment" : "bit<16> tmp2 = hdr.udp.srcPort;"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["udp", "srcPort"]
+            },
+            {
+              "type" : "field",
+              "value" : ["udp", "dstPort"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "basic.p4",
+            "line" : 148,
+            "column" : 8,
+            "source_fragment" : "hdr.udp.srcPort = hdr.udp.dstPort"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["udp", "dstPort"]
+            },
+            {
+              "type" : "field",
+              "value" : ["scalars", "tmp2_0"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "basic.p4",
+            "line" : 149,
+            "column" : 8,
+            "source_fragment" : "hdr.udp.dstPort = tmp2"
+          }
         }
       ]
     },
     {
-      "name" : "basic165",
+      "name" : "basic168",
       "id" : 5,
       "runtime_data" : [],
       "primitives" : [
@@ -624,7 +682,7 @@
           ],
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 165,
+            "line" : 168,
             "column" : 12,
             "source_fragment" : "kv_cache_key.write(keyPos, hdr.kv.key)"
           }
@@ -647,7 +705,7 @@
           ],
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 166,
+            "line" : 169,
             "column" : 12,
             "source_fragment" : "kv_cache_value.write(keyPos, hdr.kv.value)"
           }
@@ -655,7 +713,7 @@
       ]
     },
     {
-      "name" : "basic171",
+      "name" : "basic174",
       "id" : 6,
       "runtime_data" : [],
       "primitives" : [
@@ -677,7 +735,7 @@
           ],
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 171,
+            "line" : 174,
             "column" : 20,
             "source_fragment" : "kv_cache_value.read(hdr.kv.value, keyPos)"
           }
@@ -685,7 +743,7 @@
       ]
     },
     {
-      "name" : "basic169",
+      "name" : "basic172",
       "id" : 7,
       "runtime_data" : [],
       "primitives" : [
@@ -707,7 +765,7 @@
           ],
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 169,
+            "line" : 172,
             "column" : 16,
             "source_fragment" : "kv_cache_key.read(currentKey, keyPos)"
           }
@@ -732,7 +790,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 163,
+            "line" : 166,
             "column" : 8,
             "source_fragment" : "compute_hashes(hdr.kv.key)"
           },
@@ -757,11 +815,11 @@
           }
         },
         {
-          "name" : "tbl_basic165",
+          "name" : "tbl_basic168",
           "id" : 1,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 165,
+            "line" : 168,
             "column" : 12,
             "source_fragment" : "kv_cache_key.write(keyPos, hdr.kv.key); ..."
           },
@@ -773,10 +831,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [5],
-          "actions" : ["basic165"],
+          "actions" : ["basic168"],
           "base_default_next" : "node_10",
           "next_tables" : {
-            "basic165" : "node_10"
+            "basic168" : "node_10"
           },
           "default_entry" : {
             "action_id" : 5,
@@ -786,11 +844,11 @@
           }
         },
         {
-          "name" : "tbl_basic169",
+          "name" : "tbl_basic172",
           "id" : 2,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 169,
+            "line" : 172,
             "column" : 16,
             "source_fragment" : "kv_cache_key.read(currentKey, keyPos)"
           },
@@ -802,10 +860,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [7],
-          "actions" : ["basic169"],
+          "actions" : ["basic172"],
           "base_default_next" : "node_7",
           "next_tables" : {
-            "basic169" : "node_7"
+            "basic172" : "node_7"
           },
           "default_entry" : {
             "action_id" : 7,
@@ -815,11 +873,11 @@
           }
         },
         {
-          "name" : "tbl_basic171",
+          "name" : "tbl_basic174",
           "id" : 3,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 171,
+            "line" : 174,
             "column" : 20,
             "source_fragment" : "kv_cache_value.read(hdr.kv.value, keyPos)"
           },
@@ -831,10 +889,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [6],
-          "actions" : ["basic171"],
-          "base_default_next" : "tbl_swap_ipv4",
+          "actions" : ["basic174"],
+          "base_default_next" : "tbl_change_direction",
           "next_tables" : {
-            "basic171" : "tbl_swap_ipv4"
+            "basic174" : "tbl_change_direction"
           },
           "default_entry" : {
             "action_id" : 6,
@@ -844,13 +902,13 @@
           }
         },
         {
-          "name" : "tbl_swap_ipv4",
+          "name" : "tbl_change_direction",
           "id" : 4,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 172,
+            "line" : 175,
             "column" : 20,
-            "source_fragment" : "swap_ipv4()"
+            "source_fragment" : "change_direction()"
           },
           "key" : [],
           "match_type" : "exact",
@@ -860,10 +918,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [4],
-          "actions" : ["MyIngress.swap_ipv4"],
+          "actions" : ["MyIngress.change_direction"],
           "base_default_next" : "node_10",
           "next_tables" : {
-            "MyIngress.swap_ipv4" : "node_10"
+            "MyIngress.change_direction" : "node_10"
           },
           "default_entry" : {
             "action_id" : 4,
@@ -877,7 +935,7 @@
           "id" : 5,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 149,
+            "line" : 152,
             "column" : 10,
             "source_fragment" : "ipv4_lpm"
           },
@@ -918,7 +976,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 164,
+            "line" : 167,
             "column" : 12,
             "source_fragment" : "hdr.kv.direction == OUTBOUND"
           },
@@ -936,7 +994,7 @@
               }
             }
           },
-          "true_next" : "tbl_basic165",
+          "true_next" : "tbl_basic168",
           "false_next" : "node_5"
         },
         {
@@ -944,7 +1002,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 168,
+            "line" : 171,
             "column" : 16,
             "source_fragment" : "hdr.kv.rw == READ_BIT"
           },
@@ -962,7 +1020,7 @@
               }
             }
           },
-          "true_next" : "tbl_basic169",
+          "true_next" : "tbl_basic172",
           "false_next" : "node_10"
         },
         {
@@ -970,7 +1028,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 170,
+            "line" : 173,
             "column" : 20,
             "source_fragment" : "currentKey == hdr.kv.key"
           },
@@ -988,7 +1046,7 @@
               }
             }
           },
-          "true_next" : "tbl_basic171",
+          "true_next" : "tbl_basic174",
           "false_next" : "node_10"
         },
         {
@@ -996,7 +1054,7 @@
           "id" : 3,
           "source_info" : {
             "filename" : "basic.p4",
-            "line" : 176,
+            "line" : 179,
             "column" : 12,
             "source_fragment" : "hdr.ipv4.isValid()"
           },
@@ -1021,7 +1079,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "basic.p4",
-        "line" : 186,
+        "line" : 189,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
@@ -1037,7 +1095,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "basic.p4",
-        "line" : 198,
+        "line" : 201,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },

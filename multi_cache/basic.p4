@@ -2,7 +2,7 @@
 #include <core.p4>
 #include <v1model.p4>
 
-#define KV_ENTRIES 4096
+#define KV_ENTRIES 1
 
 #define PKT_INSTANCE_TYPE_NORMAL 0
 #define PKT_INSTANCE_TYPE_RESUBMIT 6
@@ -136,14 +136,14 @@ control MyIngress(inout headers hdr,
                   inout meta_t meta,
                   inout standard_metadata_t standard_metadata) {
 
-    register<bit<32>>(4096) l1_cache_key;
-    register<bit<32>>(4096) l1_cache_value;
-    register<bit<32>>(4096) l2_cache_key;
-    register<bit<32>>(4096) l2_cache_value;
-    register<bit<32>>(4096) l3_cache_key;
-    register<bit<32>>(4096) l3_cache_value;
-    register<bit<32>>(4096) l4_cache_key;
-    register<bit<32>>(4096) l4_cache_value;
+    register<bit<32>>(KV_ENTRIES) l1_cache_key;
+    register<bit<32>>(KV_ENTRIES) l1_cache_value;
+    register<bit<32>>(KV_ENTRIES) l2_cache_key;
+    register<bit<32>>(KV_ENTRIES) l2_cache_value;
+    register<bit<32>>(KV_ENTRIES) l3_cache_key;
+    register<bit<32>>(KV_ENTRIES) l3_cache_value;
+    register<bit<32>>(KV_ENTRIES) l4_cache_key;
+    register<bit<32>>(KV_ENTRIES) l4_cache_value;
     bit<32> key_position;
     bit<32> evicted_key_1;
     bit<32> evicted_value_1;
@@ -160,6 +160,9 @@ control MyIngress(inout headers hdr,
         ip4Addr_t tmp = hdr.ipv4.srcAddr;
         hdr.ipv4.srcAddr = hdr.ipv4.dstAddr;
         hdr.ipv4.dstAddr = tmp;
+        bit<16> tmp2 = hdr.udp.srcPort;
+        hdr.udp.srcPort = hdr.udp.dstPort;
+        hdr.udp.dstPort = tmp2;
         hdr.kv.direction = OUTBOUND;
     }
 
@@ -245,7 +248,7 @@ control MyIngress(inout headers hdr,
             }
 
         } else if (hdr.kv.direction == INBOUND && hdr.kv.rw == READ_BIT) {
-            // when original packet arrives, search the key in cache
+            // when original read query packet arrives, search the key in cache
             // layer 1
             l1_cache_key.read(current_key, key_position);
             l1_cache_value.read(current_value, key_position);
@@ -270,6 +273,7 @@ control MyIngress(inout headers hdr,
 
             if (current_key == hdr.kv.key) {
                 // key has found, recirculate the packet
+                hdr.kv.value = current_value;
                 meta.to_recirculate = 0x1;
             }
         }

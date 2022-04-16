@@ -65,9 +65,9 @@ actions {
 }
 actions {
   preamble {
-    id: 32635363
-    name: "MyIngress.swap_ipv4"
-    alias: "swap_ipv4"
+    id: 19896847
+    name: "MyIngress.change_direction"
+    alias: "change_direction"
   }
 }
 registers {
@@ -83,7 +83,7 @@ registers {
       }
     }
   }
-  size: 4096
+  size: 1
 }
 registers {
   preamble {
@@ -98,7 +98,7 @@ registers {
       }
     }
   }
-  size: 4096
+  size: 1
 }
 type_info {
 }
