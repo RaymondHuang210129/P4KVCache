@@ -3,6 +3,8 @@ BMv2 Code for Purdue CS590 Final Project Demo:
 
 Applying P4 switch as the cache of Key-Value Store
 
+Presentation slides: [link](https://github.com/RaymondHuang210129/P4KVCache/blob/main/demo/presentation_slides.pdf)
+
 ## Get Started
 
 This code can be compiled and loaded as a bmv2 application. Testing the code requires bmv2 installation and mininet environment.
